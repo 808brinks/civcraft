@@ -5,31 +5,29 @@ import nl.civcraft.core.gamecomponents.Voxel;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.test.util.VoxelUtil;
 import org.joml.Vector3f;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.spotify.hamcrest.optional.OptionalMatchers.emptyOptional;
-import static com.spotify.hamcrest.optional.OptionalMatchers.optionalWithValue;
-import static nl.civcraft.test.util.ThrowableAssertion.assertThrown;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.junit.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Created by Bob on 17-2-2017.
  * <p>
  * This is probably not worth documenting
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class VoxelManagerTest {
 
 
     private VoxelManager underTest;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         underTest = new VoxelManager();
     }
@@ -39,7 +37,7 @@ public class VoxelManagerTest {
     public void testAddVxoel_doesntAddNonVoxelGameObject() {
         GameObject voxel = VoxelUtil.createVoxel(new Vector3f(), underTest);
         voxel.removeComponent(voxel.getComponent(Voxel.class).get());
-        assertThrown(() -> underTest.addVoxel(voxel)).isInstanceOf(IllegalStateException.class);
+        assertThrows(IllegalStateException.class, () -> underTest.addVoxel(voxel));
     }
 
     @Test
@@ -47,7 +45,8 @@ public class VoxelManagerTest {
         GameObject expected = VoxelUtil.createVoxel(new Vector3f(), underTest);
         underTest.addVoxel(expected);
         Optional<GameObject> voxelAt = underTest.getVoxelAt(new Vector3f());
-        assertThat(voxelAt, optionalWithValue(is(expected)));
+        assertThat(voxelAt.isPresent(), is(true));
+        assertThat(voxelAt.get(), is(expected));
     }
 
     @Test
@@ -55,7 +54,8 @@ public class VoxelManagerTest {
         GameObject expected = VoxelUtil.createVoxel(new Vector3f(-100, -100, -100), underTest);
         underTest.addVoxel(expected);
         Optional<GameObject> voxelAt = underTest.getVoxelAt(new Vector3f(-100, -100, -100));
-        assertThat(voxelAt, optionalWithValue(is(expected)));
+        assertThat(voxelAt.isPresent(), is(true));
+        assertThat(voxelAt.get(), is(expected));
     }
 
     @Test
@@ -65,7 +65,8 @@ public class VoxelManagerTest {
         GameObject expected = VoxelUtil.createVoxel(new Vector3f(), underTest);
         underTest.addVoxel(expected);
         Optional<GameObject> voxelAt = underTest.getVoxelAt(new Vector3f());
-        assertThat(voxelAt, optionalWithValue(is(expected)));
+        assertThat(voxelAt.isPresent(), is(true));
+        assertThat(voxelAt.get(), is(expected));
     }
     //</editor-fold>
 
@@ -76,7 +77,8 @@ public class VoxelManagerTest {
         GameObject expected = VoxelUtil.createVoxel(new Vector3f(), underTest);
         underTest.addVoxel(expected);
         Optional<GameObject> groundAt = underTest.getGroundAt(new Vector3f(0, 1, 0), 1);
-        assertThat(groundAt, optionalWithValue(is(expected)));
+        assertThat(groundAt.isPresent(), is(true));
+        assertThat(groundAt.get(), is(expected));
     }
 
     @Test
@@ -84,7 +86,8 @@ public class VoxelManagerTest {
         GameObject expected = VoxelUtil.createVoxel(new Vector3f(), underTest);
         underTest.addVoxel(expected);
         Optional<GameObject> groundAt = underTest.getGroundAt(new Vector3f(0, 20, 0), 20);
-        assertThat(groundAt, optionalWithValue(is(expected)));
+        assertThat(groundAt.isPresent(), is(true));
+        assertThat(groundAt.get(), is(expected));
     }
 
     @Test
@@ -93,7 +96,8 @@ public class VoxelManagerTest {
         VoxelUtil.createVoxel(new Vector3f(0, 1, 0).mul(-1), underTest);
         underTest.addVoxel(expected);
         Optional<GameObject> groundAt = underTest.getGroundAt(new Vector3f(0, 1, 0).mul(-1), 1);
-        assertThat(groundAt, optionalWithValue(is(expected)));
+        assertThat(groundAt.isPresent(), is(true));
+        assertThat(groundAt.get(), is(expected));
     }
 
     @Test
@@ -104,7 +108,8 @@ public class VoxelManagerTest {
         }
         underTest.addVoxel(expected);
         Optional<GameObject> groundAt = underTest.getGroundAt(new Vector3f(0, 20, 0).mul(-1), 20);
-        assertThat(groundAt, optionalWithValue(is(expected)));
+        assertThat(groundAt.isPresent(), is(true));
+        assertThat(groundAt.get(), is(expected));
     }
 
     @Test
@@ -115,13 +120,14 @@ public class VoxelManagerTest {
         }
         underTest.addVoxel(expected);
         Optional<GameObject> groundAt = underTest.getGroundAt(new Vector3f(0, 20, 0).mul(-1), 5);
-        assertThat(groundAt, emptyOptional());
+        assertThat(groundAt.isPresent(), is(true));
+        assertThat(groundAt.get(), is(expected));
     }
 
     @Test
     public void testGetGroundAt_groundNotFound() {
         Optional<GameObject> groundAt = underTest.getGroundAt(new Vector3f(0, 0, 0).mul(-1), 20);
-        assertThat(groundAt, emptyOptional());
+        assertThat(groundAt.isPresent(), is(false));
     }
     //</editor-fold>
 
@@ -130,6 +136,6 @@ public class VoxelManagerTest {
         underTest.addVoxel(VoxelUtil.createVoxel(new Vector3f(), underTest));
         underTest.clear();
         Optional<GameObject> voxelAt = underTest.getVoxelAt(new Vector3f());
-        assertThat(voxelAt, emptyOptional());
+        assertThat(voxelAt.isPresent(), is(false));
     }
 }

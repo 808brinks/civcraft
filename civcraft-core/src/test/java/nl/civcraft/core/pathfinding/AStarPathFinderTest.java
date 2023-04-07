@@ -3,24 +3,23 @@ package nl.civcraft.core.pathfinding;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
 import org.joml.Vector3f;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatcher;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 import java.util.Queue;
 
-import static com.spotify.hamcrest.optional.OptionalMatchers.emptyOptional;
-import static com.spotify.hamcrest.optional.OptionalMatchers.optionalWithValue;
 import static nl.civcraft.test.util.VoxelUtil.createVoxel;
 import static nl.civcraft.test.util.VoxelUtil.createVoxels;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.junit.MatcherAssert.assertThat;
-import static org.mockito.Matchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 /**
@@ -28,7 +27,7 @@ import static org.mockito.Mockito.when;
  * <p>
  * This is probably not worth documenting
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AStarPathFinderTest {
 
     private AStarPathFinder underTest;
@@ -38,7 +37,7 @@ public class AStarPathFinderTest {
     private PathFindingTarget target;
     private VoxelManager voxelManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         voxelManager = new VoxelManager();
         underTest = new AStarPathFinder();
@@ -49,18 +48,10 @@ public class AStarPathFinderTest {
     @Test
     public void testFindPath_targetEqualsStart() {
         GameObject start = new GameObject();
-        when(target.isReached(eq(testCivvy), aStartNodeOf(start))).thenReturn(true);
+        when(target.isReached(eq(testCivvy), any(AStarNode.class))).thenAnswer(invocation -> ((AStarNode) invocation.getArgument(1)).getGameObject().equals(start));
         Optional<Queue<GameObject>> path = underTest.findPath(testCivvy, start, target);
-        assertThat(path, optionalWithValue(hasSize(1)));
-    }
-
-    private static AStarNode aStartNodeOf(GameObject start) {
-        return argThat(new ArgumentMatcher<AStarNode>() {
-            @Override
-            public boolean matches(Object argument) {
-                return argument instanceof AStarNode && start.equals(((AStarNode) argument).getGameObject());
-            }
-        });
+        assertThat(path.isPresent(), equalTo(true));
+        assertThat(path.get(), hasSize(1));
     }
 
     @Test
@@ -69,7 +60,8 @@ public class AStarPathFinderTest {
         GameObject targetVoxel = createVoxel(new Vector3f(1, 0, 0), voxelManager);
         target = new MoveToVoxelTarget(targetVoxel);
         Optional<Queue<GameObject>> path = underTest.findPath(testCivvy, start, target);
-        assertThat(path, optionalWithValue(hasSize(2)));
+        assertThat(path.isPresent(), equalTo(true));
+        assertThat(path.get(), hasSize(2));
         assertThat(path.get().poll(), is(start));
         assertThat(path.get().poll(), is(targetVoxel));
     }
@@ -88,7 +80,8 @@ public class AStarPathFinderTest {
         GameObject targetVoxel = voxelManager.getVoxelAt(2, 0, 2).get();
         this.target = new MoveToVoxelTarget(targetVoxel);
         Optional<Queue<GameObject>> path = underTest.findPath(testCivvy, start, this.target);
-        assertThat(path, optionalWithValue(hasSize(5)));
+        assertThat(path.isPresent(), equalTo(true));
+        assertThat(path.get(), hasSize(5));
         assertThat(path.get().poll(), is(start));
         assertThat(path.get().poll(), is(voxelManager.getVoxelAt(0, 0, 1).get()));
         assertThat(path.get().poll(), is(voxelManager.getVoxelAt(0, 0, 2).get()));
@@ -120,7 +113,8 @@ public class AStarPathFinderTest {
         GameObject targetVoxel = voxelManager.getVoxelAt(2, 0, 2).get();
         this.target = new MoveToVoxelTarget(targetVoxel);
         Optional<Queue<GameObject>> path = underTest.findPath(testCivvy, start, this.target);
-        assertThat(path, optionalWithValue(hasSize(5)));
+        assertThat(path.isPresent(), equalTo(true));
+        assertThat(path.get(), hasSize(5));
         assertThat(path.get().poll(), is(start));
         assertThat(path.get().poll(), is(voxelManager.getVoxelAt(1, 0, 0).get()));
         assertThat(path.get().poll(), is(voxelManager.getVoxelAt(2, 0, 0).get()));
@@ -152,7 +146,7 @@ public class AStarPathFinderTest {
         GameObject targetVoxel = voxelManager.getVoxelAt(2, 0, 2).get();
         this.target = new MoveToVoxelTarget(targetVoxel);
         Optional<Queue<GameObject>> path = underTest.findPath(testCivvy, start, this.target);
-        assertThat(path, emptyOptional());
+        assertThat(path.isPresent(), equalTo(false));
     }
 
     @Test
@@ -174,7 +168,8 @@ public class AStarPathFinderTest {
         GameObject targetVoxel = voxelManager.getVoxelAt(2, 0, 2).get();
         this.target = new MoveToVoxelTarget(targetVoxel);
         Optional<Queue<GameObject>> path = underTest.findPath(testCivvy, start, this.target);
-        assertThat(path, optionalWithValue(hasSize(5)));
+        assertThat(path.isPresent(), equalTo(true));
+        assertThat(path.get(), hasSize(5));
         assertThat(path.get().poll(), is(start));
         assertThat(path.get().poll(), is(voxelManager.getVoxelAt(1, 0, 0).get()));
         assertThat(path.get().poll(), is(voxelManager.getVoxelAt(2, 0, 0).get()));

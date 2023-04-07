@@ -2,12 +2,12 @@ package nl.civcraft.core.gamecomponents;
 
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.test.util.MocksCollector;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -20,23 +20,23 @@ import static org.mockito.Mockito.verify;
  * <p>
  * This is probably not worth documenting
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ItemComponentTest {
 
     public static final String TEST_TYPE = "testType";
-    private static MocksCollector mocksCollector = new MocksCollector();
+    private static final MocksCollector mocksCollector = new MocksCollector();
     private ItemComponent underTest;
     @Spy
     private GameObject testGameObject = new GameObject();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         underTest = new ItemComponent.Factory(TEST_TYPE).build();
         testGameObject.addComponent(underTest);
         verify(testGameObject).addComponent(underTest);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         mocksCollector.validateMocks();
     }

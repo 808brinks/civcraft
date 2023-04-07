@@ -4,30 +4,30 @@ import io.reactivex.Observable;
 import nl.civcraft.core.gamecomponents.GameComponent;
 import nl.civcraft.core.model.GameObject;
 import org.joml.Matrix4f;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.hamcrest.junit.MatcherAssert.assertThat;
 
 /**
  * Created by Bob on 14-10-20017.
  * <p>
  * This is probably not worth documenting
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PrefabManagerTest {
 
     private PrefabManager underTest;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         underTest = new PrefabManager();
     }

@@ -9,18 +9,18 @@ import nl.civcraft.core.tasks.PlaceBlock;
 import nl.civcraft.core.tasks.Task;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.junit.MatcherAssert.assertThat;
 import static org.mockito.Mockito.*;
 
 /**
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
  * <p>
  * This is probably not worth documenting
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class BuildWallToolTest {
     private BuildWallTool underTest;
 
@@ -47,7 +47,7 @@ public class BuildWallToolTest {
     private MousePicker mousePicker;
 
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         underTest = new BuildWallTool(mousePicker, taskManager, stockpileManager, blockManager, planningGhostManager);
     }

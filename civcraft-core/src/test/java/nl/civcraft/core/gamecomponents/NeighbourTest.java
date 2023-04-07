@@ -3,31 +3,33 @@ package nl.civcraft.core.gamecomponents;
 import nl.civcraft.core.managers.VoxelManager;
 import nl.civcraft.core.model.GameObject;
 import nl.civcraft.core.model.NeighbourDirection;
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.core.IsCollectionContaining;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.spotify.hamcrest.optional.OptionalMatchers.optionalWithValue;
 import static nl.civcraft.test.util.Vector3fMatcher.isInRange;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.hamcrest.collection.IsMapContaining.hasKey;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.Is.isA;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
-import static org.mockito.Matchers.any;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 /**
@@ -35,14 +37,14 @@ import static org.mockito.Mockito.when;
  * <p>
  * This is probably not worth documenting
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class NeighbourTest {
     private Neighbour underTest;
     @Mock
     private VoxelManager voxelManager;
     private GameObject testGameObject;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         underTest = new Neighbour(voxelManager);
         testGameObject = new GameObject();
@@ -66,7 +68,8 @@ public class NeighbourTest {
         GameObject expectedNeighbour = addTestNeighbour(transform);
         testGameObject.addComponent(underTest);
         Optional<GameObject> actual = underTest.getNeighbour(expectedDirection);
-        assertThat(actual, optionalWithValue(is(expectedNeighbour)));
+        assertTrue(actual.isPresent());
+        assertThat(actual.get(), is(expectedNeighbour));
         assertThat(underTest.getNeighbours().entrySet(), hasSize(1));
         assertThat(underTest.getNeighbours(), hasEntry(expectedDirection, expectedNeighbour));
     }
@@ -217,7 +220,8 @@ public class NeighbourTest {
         GameObject rightNeighbour = addTestNeighbour(new Vector3f(1, 0, 0));
         testGameObject.addComponent(underTest);
         Optional<GameObject> neighbour = Neighbour.getNeighbour(testGameObject, NeighbourDirection.RIGHT);
-        assertThat(neighbour, optionalWithValue(is(rightNeighbour)));
+        assertThat(neighbour.isPresent(), equalTo(true));
+        assertThat(neighbour.get(), equalTo(rightNeighbour));
     }
 
     @Test
@@ -258,6 +262,6 @@ public class NeighbourTest {
     public void testFactory() {
         Neighbour.Factory factory = new Neighbour.Factory(voxelManager);
         assertThat(factory.build(), isA(Neighbour.class));
-        assertThat(factory.getComponentType(), is(Neighbour.class));
+        assertThat(factory.getComponentType(), CoreMatchers.is(Neighbour.class));
     }
 }

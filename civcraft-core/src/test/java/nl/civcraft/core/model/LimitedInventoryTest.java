@@ -1,29 +1,29 @@
 package nl.civcraft.core.model;
 
 import nl.civcraft.core.gamecomponents.ItemComponent;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static com.spotify.hamcrest.optional.OptionalMatchers.emptyOptional;
-import static com.spotify.hamcrest.optional.OptionalMatchers.optionalWithValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.junit.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Created by Bob on 26-2-2017.
  * <p>
  * This is probably not worth documenting
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LimitedInventoryTest {
 
     private LimitedInventory underTest;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         underTest = new LimitedInventory(3);
     }
@@ -34,7 +34,8 @@ public class LimitedInventoryTest {
         underTest.addItem(testItem);
 
         Optional<GameObject> firstItem = underTest.getFirstItem();
-        assertThat(firstItem, optionalWithValue(is(testItem)));
+        assertTrue(firstItem.isPresent());
+        assertThat(firstItem.get(), is(testItem));
     }
 
     private static GameObject createTestItem() {
@@ -59,7 +60,7 @@ public class LimitedInventoryTest {
     @Test
     public void testGetFirstItem_empty() {
         Optional<GameObject> firstItem = underTest.getFirstItem();
-        assertThat(firstItem, emptyOptional());
+        assertFalse(firstItem.isPresent());
     }
 
     @Test

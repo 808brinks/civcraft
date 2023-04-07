@@ -38,9 +38,10 @@
             <artifactId>guava</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest -->
         <dependency>
-            <groupId>com.spotify</groupId>
-            <artifactId>hamcrest-optional</artifactId>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
         </dependency>
 
         <dependency>
