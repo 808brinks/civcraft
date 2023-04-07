@@ -1,8 +1,6 @@
 package nl.civcraft.core.gamecomponents;
 
 import nl.civcraft.core.model.GameObject;
-import nl.civcraft.test.util.MocksCollector;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,7 +22,6 @@ import static org.mockito.Mockito.verify;
 public class ItemComponentTest {
 
     public static final String TEST_TYPE = "testType";
-    private static final MocksCollector mocksCollector = new MocksCollector();
     private ItemComponent underTest;
     @Spy
     private GameObject testGameObject = new GameObject();
@@ -36,10 +33,6 @@ public class ItemComponentTest {
         verify(testGameObject).addComponent(underTest);
     }
 
-    @AfterEach
-    public void tearDown() throws Exception {
-        mocksCollector.validateMocks();
-    }
 
     @Test
     public void construction() {

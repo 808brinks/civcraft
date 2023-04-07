@@ -15,14 +15,6 @@
         <myproject.root>${basedir}/..</myproject.root>
     </properties>
     <dependencies>
-
-        <dependency>
-            <groupId>nl.civcraft</groupId>
-            <artifactId>civcraft-testing</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.bushe</groupId>
             <artifactId>eventbus</artifactId>

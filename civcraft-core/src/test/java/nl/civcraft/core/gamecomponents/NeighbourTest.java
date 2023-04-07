@@ -264,4 +264,6 @@ public class NeighbourTest {
         assertThat(factory.build(), isA(Neighbour.class));
         assertThat(factory.getComponentType(), CoreMatchers.is(Neighbour.class));
     }
+
+
 }
